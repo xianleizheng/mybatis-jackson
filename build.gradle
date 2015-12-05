@@ -1,0 +1,47 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+group = 'com.github.javaplugs'
+version = '0.1-a1'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    runtime 'com.fasterxml.jackson.core:jackson-core:2.+'
+    runtime 'com.fasterxml.jackson.core:jackson-databind:2.+'
+    runtime 'org.mybatis:mybatis:3.+'
+    
+    testCompile 'com.fasterxml.jackson.core:jackson-core:2.+'
+    testCompile 'com.fasterxml.jackson.core:jackson-databind:2.+'
+    testCompile 'org.mybatis:mybatis:3.+'
+    
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.assertj:assertj-core:3.2.0'
+    
+    testCompile 'org.postgresql:postgresql:9.4-1206-jdbc42'
+}
+
+//Include runtime for compilation
+sourceSets.main.compileClasspath += configurations.runtime
+
+publishing {
+    publications {
+        mavenJar(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+// Tasks
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+}
