@@ -1,8 +1,11 @@
-# JSON support for Mybatis 3.x using Jackson
+# JSON support for Mybatis 3.x using Jackson 2.6.x
 
 Provide support for JSON like field types in any Database.
 I'm developed this handler with PostgreSql in mind, 
 but it looks like it can be used with any other database even without json types.
+
+Artifact does not include direct jackson dependencies - it is up to you to add them into your project.
+Looks like you can use any Jackson version compatible by API with 2.6.x.
 
 ##How does it work
 Because JDBC does not support JSON types, it transfer JSON to/from database as a string.
@@ -19,6 +22,12 @@ invalid JSON string.
 ## Adding to your project
 
 For now this package is available only via https://jitpack.io/
+
+I'm expecting that you are already have jackson dependencies in your project.
+```
+compile 'com.fasterxml.jackson.core:jackson-core:2.6.+'
+compile 'com.fasterxml.jackson.core:jackson-databind:2.6.+'
+```
 
 ### Gradle dependencies
 ```
