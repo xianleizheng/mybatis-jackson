@@ -38,7 +38,7 @@ repositories {
 }
 
 dependencies {
-  compile 'com.github.javaplugs:mybatis-jackson:0.1'
+  compile 'com.github.javaplugs:mybatis-jackson:0.2'
 }
 ```
 
@@ -52,7 +52,7 @@ dependencies {
 <dependency>
     <groupId>com.github.javaplugs</groupId>
     <artifactId>mybatis-jackson</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 </dependency>
 ```
 

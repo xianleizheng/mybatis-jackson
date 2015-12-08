@@ -20,9 +20,9 @@
         VALUES (
         #{id}, 
         <if test="jsonArray == null">null,</if>
-        <if test="jsonArray != null">to_json(#{jsonArray}),</if>
+        <if test="jsonArray != null">(#{jsonArray})::json,</if>
         <if test="jsonObject == null">null</if>
-        <if test="jsonObject != null">to_json(#{jsonObject})</if>
+        <if test="jsonObject != null">(#{jsonObject})::json</if>
         )
     </insert>
     
@@ -32,9 +32,9 @@
         VALUES (
         #{id}, 
         <if test="jsonArray == null">null,</if>
-        <if test="jsonArray != null">to_json(#{jsonArray}),</if>
+        <if test="jsonArray != null">(#{jsonArray})::json,</if>
         <if test="jsonObject == null">null</if>
-        <if test="jsonObject != null">to_json(#{jsonObject})</if>
+        <if test="jsonObject != null">(#{jsonObject})::json</if>
         )
     </insert>
     

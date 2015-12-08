@@ -42,12 +42,12 @@ public class TreeNodeLazyWrapper implements TreeNode, Serializable {
 
     private static final long serialVersionUID = -5553988352322235606L;
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     static {
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        mapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        MAPPER.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        MAPPER.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
+        MAPPER.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
     }
 
     private final String json;
@@ -70,18 +70,7 @@ public class TreeNodeLazyWrapper implements TreeNode, Serializable {
             synchronized (this) {
                 if (this.node == null) {
                     try {
-                        String source = this.json;
-                        if (source.startsWith("\"")) {
-                            // Looks like string node - should deal with it
-                            source = source.substring(1, source.length() - 1).replace("\\\"", "\"");
-                        }
-
-                        node = mapper.readTree(source);
-                        if (node.isTextual()) {
-                            // We are expect only Array or Object nodes
-                            // Text node seems to be an json string
-                            node = mapper.readTree(node.textValue());
-                        }
+                        node = MAPPER.readTree(this.json);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex.getMessage(), ex);
                     }
@@ -184,5 +173,10 @@ public class TreeNodeLazyWrapper implements TreeNode, Serializable {
     @Override
     public int hashCode() {
         return tree().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return tree().equals(o);
     }
 }
