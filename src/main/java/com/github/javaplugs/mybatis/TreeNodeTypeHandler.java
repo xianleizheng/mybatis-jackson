@@ -49,13 +49,15 @@ import org.apache.ibatis.type.MappedTypes;
 @MappedTypes({JsonNode.class, TreeNode.class, ArrayNode.class, ObjectNode.class})
 public class TreeNodeTypeHandler extends BaseTypeHandler<TreeNode> {
 
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private static final JsonFactory FACTORY = new JsonFactory();
+
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, TreeNode parameter, JdbcType jdbcType) throws SQLException {
         StringWriter sw = new StringWriter();
-        JsonFactory f = new JsonFactory();
-        try (JsonGenerator jgen = f.createGenerator(sw)) {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeTree(jgen, parameter);
+        try (JsonGenerator jgen = FACTORY.createGenerator(sw)) {
+            MAPPER.writeTree(jgen, parameter);
             ps.setString(i, sw.toString());
         } catch (IOException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
