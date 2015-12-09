@@ -12,6 +12,11 @@ Because JDBC does not support JSON types, it transfer JSON to/from database as a
 We searialize JSON to string when we are saving and deserialize from string when reading.
 This feature means that we are really do not care if our DB can support JSON or not.
 
+###Keep in mind
+You should mind that you should use your DB API to convert JSON string comming from MyBatis 
+to appropriate JSON representation into DB while inserting/updating fields.
+Look into tests for some PostgreSql examples.
+
 ###Lazy reading
 During reading from DB handler return TreeNode wrapper that actually does not parse JSON from string.
 It is waiting for you to call any of its methods - only then it will read JSON into structure.
