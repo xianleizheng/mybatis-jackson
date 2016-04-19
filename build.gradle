@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group = 'com.github.javaplugs'
-version = '0.2'
+version = '0.3'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -12,13 +12,13 @@ repositories {
 }
 
 dependencies {
-    runtime 'com.fasterxml.jackson.core:jackson-core:2.+'
-    runtime 'com.fasterxml.jackson.core:jackson-databind:2.+'
-    runtime 'org.mybatis:mybatis:3.+'
+    runtime 'com.fasterxml.jackson.core:jackson-core:2.6.0'
+    runtime 'com.fasterxml.jackson.core:jackson-databind:2.6.0'
+    runtime 'org.mybatis:mybatis:3.3.0'
     
-    testCompile 'com.fasterxml.jackson.core:jackson-core:2.+'
-    testCompile 'com.fasterxml.jackson.core:jackson-databind:2.+'
-    testCompile 'org.mybatis:mybatis:3.+'
+    testCompile 'com.fasterxml.jackson.core:jackson-core:2.6.0'
+    testCompile 'com.fasterxml.jackson.core:jackson-databind:2.6.0'
+    testCompile 'org.mybatis:mybatis:3.3.0'
     
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.2.0'
@@ -28,11 +28,42 @@ dependencies {
 
 //Include runtime for compilation
 sourceSets.main.compileClasspath += configurations.runtime
+javadoc.classpath += configurations.runtime
+
+buildscript {
+    repositories {
+		mavenCentral()
+    }
+    dependencies {
+        classpath 'org.mybatis:mybatis:3.3.0'
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
 
 publishing {
     publications {
         mavenJar(MavenPublication) {
             from components.java
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
         }
     }
 }

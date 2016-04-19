@@ -1,16 +1,13 @@
 package com.github.javaplugs.mybatis;
 
+import static org.assertj.core.api.Assertions.*;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import static org.assertj.core.api.Assertions.*;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Iterator;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.BeforeClass;
@@ -18,6 +15,10 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.postgresql.ds.PGSimpleDataSource;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Iterator;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PostgresqlTest extends JsonHandlersTestApi {

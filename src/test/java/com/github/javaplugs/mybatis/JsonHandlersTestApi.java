@@ -1,21 +1,20 @@
 package com.github.javaplugs.mybatis;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collection;
-import javax.sql.DataSource;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.apache.ibatis.type.TypeHandler;
 import org.assertj.core.api.Assertions;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.sql.DataSource;
 
 public abstract class JsonHandlersTestApi {
 
@@ -25,7 +24,6 @@ public abstract class JsonHandlersTestApi {
 //
 //        Assertions.assertThat(JsonHandlersTestApi.class.getResource(resource).getFile())
 //            .isEqualTo("");
-
         String query;
         try (final InputStream is = JsonHandlersTestApi.class.getResourceAsStream(resource)) {
 //        try (final InputStream is = JsonHandlersTestApi.class.getResourceAsStream(resource)) {

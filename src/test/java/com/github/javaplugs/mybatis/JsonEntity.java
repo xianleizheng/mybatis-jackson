@@ -1,6 +1,7 @@
 package com.github.javaplugs.mybatis;
 
 import com.fasterxml.jackson.core.TreeNode;
+
 import java.io.Serializable;
 
 public class JsonEntity implements Serializable {
