@@ -52,8 +52,8 @@ public class PostgresqlTest extends JsonHandlersTestApi {
     public void test1InsertNulls() {
         try (SqlSession sess = sessionFactory.openSession()) {
             JsonMapper mapper = sess.getMapper(JsonMapper.class);
-            mapper.insert(new JsonEntity(1, null, null));
-            mapper.insertValues(2, null, null);
+            mapper.insert(new JsonEntity(1, null, null, null, null));
+            mapper.insertValues(2, null, null, null, null);
             sess.commit();
         }
     }
@@ -65,8 +65,8 @@ public class PostgresqlTest extends JsonHandlersTestApi {
         try (SqlSession sess = sessionFactory.openSession()) {
             JsonMapper mapper = sess.getMapper(JsonMapper.class);
 
-            mapper.insert(new JsonEntity(3, aNode, oNode));
-            mapper.insertValues(4, aNode, oNode);
+            mapper.insert(new JsonEntity(3, aNode, oNode, JsonNodeValue.from(aNode), JsonNodeValue.from(oNode)));
+            mapper.insertValues(4, aNode, oNode, JsonNodeValue.from(aNode), JsonNodeValue.from(oNode));
             sess.commit();
         }
     }
@@ -78,10 +78,14 @@ public class PostgresqlTest extends JsonHandlersTestApi {
             JsonEntity e1 = mapper.get(1);
             assertThat(e1.getJsonArray()).isNull();
             assertThat(e1.getJsonObject()).isNull();
+            assertThat(e1.getNodeArray().isPresent()).isFalse();
+            assertThat(e1.getNodeObject().isPresent()).isFalse();
 
             JsonEntity e2 = mapper.get(2);
             assertThat(e2.getJsonArray()).isNull();
             assertThat(e2.getJsonObject()).isNull();
+            assertThat(e2.getNodeArray().isPresent()).isFalse();
+            assertThat(e2.getNodeObject().isPresent()).isFalse();
         }
     }
 
@@ -93,10 +97,14 @@ public class PostgresqlTest extends JsonHandlersTestApi {
 
             compareArrays(aNode, e1.getJsonArray());
             compareObjects(oNode, e1.getJsonObject());
+            compareArrays(aNode, e1.getNodeArray().get());
+            compareObjects(oNode, e1.getNodeObject().get());
 
             JsonEntity e2 = mapper.get(4);
             compareArrays(aNode, e2.getJsonArray());
             compareObjects(oNode, e2.getJsonObject());
+            compareArrays(aNode, e2.getNodeArray().get());
+            compareObjects(oNode, e2.getNodeObject().get());
         }
     }
 

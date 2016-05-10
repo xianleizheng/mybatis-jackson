@@ -16,25 +16,33 @@
     
     <insert id="insert">
         INSERT INTO mybatis_jackson
-        (id, jsonArray, jsonObject)
+        (id, jsonArray, jsonObject, nodeArray, nodeObject)
         VALUES (
         #{id}, 
         <if test="jsonArray == null">null,</if>
         <if test="jsonArray != null">(#{jsonArray})::json,</if>
-        <if test="jsonObject == null">null</if>
-        <if test="jsonObject != null">(#{jsonObject})::json</if>
+        <if test="jsonObject == null">null,</if>
+        <if test="jsonObject != null">(#{jsonObject})::json,</if>
+        <if test="nodeArray == null">null,</if>
+        <if test="nodeArray != null">(#{nodeArray.value})::json,</if>
+        <if test="nodeObject == null">null</if>
+        <if test="nodeObject != null">(#{nodeObject.value})::json</if>
         )
     </insert>
     
     <insert id="insertValues">
         INSERT INTO mybatis_jackson
-        (id, jsonArray, jsonObject)
+        (id, jsonArray, jsonObject, nodeArray, nodeObject)
         VALUES (
         #{id}, 
         <if test="jsonArray == null">null,</if>
         <if test="jsonArray != null">(#{jsonArray})::json,</if>
-        <if test="jsonObject == null">null</if>
-        <if test="jsonObject != null">(#{jsonObject})::json</if>
+        <if test="jsonObject == null">null,</if>
+        <if test="jsonObject != null">(#{jsonObject})::json,</if>
+        <if test="nodeArray == null">null,</if>
+        <if test="nodeArray != null">(#{nodeArray})::json,</if>
+        <if test="nodeObject == null">null</if>
+        <if test="nodeObject != null">(#{nodeObject})::json</if>
         )
     </insert>
     

@@ -14,13 +14,19 @@ public class JsonEntity implements Serializable {
 
     private TreeNode jsonObject;
 
+    private JsonNodeValue nodeArray = JsonNodeValue.EMPTY;
+
+    private JsonNodeValue nodeObject = JsonNodeValue.EMPTY;
+
     public JsonEntity() {
     }
 
-    public JsonEntity(long id, TreeNode jsonArray, TreeNode jsonObject) {
+    public JsonEntity(long id, TreeNode jsonArray, TreeNode jsonObject, JsonNodeValue nodeArray, JsonNodeValue nodeObject) {
         this.id = id;
         this.jsonArray = jsonArray;
         this.jsonObject = jsonObject;
+        this.nodeArray = nodeArray;
+        this.nodeObject = nodeObject;
     }
 
     public long getId() {
@@ -45,5 +51,21 @@ public class JsonEntity implements Serializable {
 
     public void setJsonObject(TreeNode jsonObject) {
         this.jsonObject = jsonObject;
+    }
+
+    public JsonNodeValue getNodeArray() {
+        return nodeArray;
+    }
+
+    public void setNodeArray(JsonNodeValue nodeArray) {
+        this.nodeArray = JsonNodeValue.orEmpty(nodeArray);
+    }
+
+    public JsonNodeValue getNodeObject() {
+        return nodeObject;
+    }
+
+    public void setNodeObject(JsonNodeValue nodeObject) {
+        this.nodeObject = JsonNodeValue.orEmpty(nodeObject);
     }
 }

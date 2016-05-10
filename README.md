@@ -15,6 +15,11 @@ Because JDBC does not support JSON types, it transfer JSON to/from database as a
 It serialize JSON to string on save and deserialize from string on read.
 This feature means that we are really do not care if our DB can support JSON or not.
 
+There are 2 handlers available:
+
+* __TreeNodeTypeHandler__ - work only with ArrayNode and ObjectNode only via TreeNode interface
+* __JsonNodeValueTypeHandler__ - value wrapper around JsonNode
+
 ###Lazy reading
 Type handler returns TreeNode wrapper that actually does not parse JSON from string.
 It is waiting for you to call any of its methods - only then it will read JSON into structure.
@@ -22,17 +27,20 @@ But this approach may lead to **unexpected runtime exception** in a case if your
 invalid JSON string.
 
 ##Add to your project
-
 You can add this artifact to your project using [JitPack](https://jitpack.io/#javaplugs/mybatis-jackson).  
 All versions list, instructions for gradle, maven, ivy etc. can be found by link above.
 
 To get latest commit use -SNAPSHOT instead version number.
 
 ## Configure
-In result map configuration you should use ```javaType="com.fasterxml.jackson.core.TreeNode"```
+In result map configuration you should use: 
+
+* ```javaType="com.fasterxml.jackson.core.TreeNode"```
+* ```javaType="com.fasterxml.jackson.databind.JsonNode"```
 
 You should not configure anything if you want to use TreeNode types as arguments in your mapper
-functions, but keep in mind that handler only expect objects of type ArrayNode or ObjectNode.
+functions, but keep in mind that handler only expect objects of type ArrayNode or ObjectNode
+for TreeNodeTypeHandler. And JsonNode for JsonNodeValueTypeHandler.
 
 
 ### Mybatis config
@@ -40,6 +48,7 @@ functions, but keep in mind that handler only expect objects of type ArrayNode o
 <!-- mybatis-config.xml -->
 <typeHandlers>
   <typeHandler handler="com.github.javaplugs.mybatis.TreeNodeTypeHandler"/>
+  <typeHandler handler="com.github.javaplugs.mybatis.JsonNodeValueTypeHandler"/>
 </typeHandlers>
 ```
 

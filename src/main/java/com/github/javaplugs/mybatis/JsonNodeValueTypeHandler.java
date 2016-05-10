@@ -23,10 +23,6 @@
  */
 package com.github.javaplugs.mybatis;
 
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedTypes;
@@ -38,51 +34,48 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Map PostgreSQL JSON type to jackson JsonNode.
+ * Map PostgreSQL JSON type to value container with jackson JsonNode inside.
  * Use JSON string representation as intermediate data format.
  *
- * @see JsonNode
+ * @see JsonNodeValue
  */
-@MappedTypes({JsonNode.class, TreeNode.class, ArrayNode.class, ObjectNode.class})
-public class TreeNodeTypeHandler extends BaseTypeHandler<TreeNode> {
+@MappedTypes({JsonNodeValue.class})
+public class JsonNodeValueTypeHandler extends BaseTypeHandler<JsonNodeValue> {
 
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, TreeNode parameter, JdbcType jdbcType) throws SQLException {
-        try {
-            ps.setString(i, ReaderWriter.write(parameter));
-        } catch (IOException ex) {
-            throw new RuntimeException(ex.getMessage(), ex);
+    public void setNonNullParameter(PreparedStatement ps, int i, JsonNodeValue parameter, JdbcType jdbcType) throws SQLException {
+        if (parameter.isPresent()) {
+            String json;
+            if (parameter.hasDbSource()) {
+                json = parameter.getSource();
+            } else {
+                try {
+                    json = ReaderWriter.write(parameter.get());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex.getMessage(), ex);
+                }
+            }
+            ps.setString(i, json);
+        } else {
+            ps.setNull(i, jdbcType.TYPE_CODE);
         }
     }
 
     @Override
-    public TreeNode getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    public JsonNodeValue getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String jsonSource = rs.getString(columnName);
-        if (jsonSource != null) {
-            return fromString(jsonSource);
-        }
-        return null;
+        return JsonNodeValue.fromDb(jsonSource);
     }
 
     @Override
-    public TreeNode getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+    public JsonNodeValue getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         String jsonSource = rs.getString(columnIndex);
-        if (jsonSource != null) {
-            return fromString(jsonSource);
-        }
-        return null;
+        return JsonNodeValue.fromDb(jsonSource);
     }
 
     @Override
-    public TreeNode getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+    public JsonNodeValue getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         String jsonSource = cs.getString(columnIndex);
-        if (jsonSource != null) {
-            return fromString(jsonSource);
-        }
-        return null;
-    }
-
-    private TreeNode fromString(String source) {
-        return source == null ? null : new TreeNodeLazyWrapper(source);
+        return JsonNodeValue.fromDb(jsonSource);
     }
 }

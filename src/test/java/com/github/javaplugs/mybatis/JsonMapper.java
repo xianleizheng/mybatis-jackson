@@ -13,6 +13,8 @@ public interface JsonMapper {
     int insertValues(
         @Param("id") long id,
         @Param("jsonArray") ArrayNode jArray,
-        @Param("jsonObject") ObjectNode jObj
+        @Param("jsonObject") ObjectNode jObj,
+        @Param("nodeArray") JsonNodeValue nArr,
+        @Param("nodeObject") JsonNodeValue nObj
     );
 }

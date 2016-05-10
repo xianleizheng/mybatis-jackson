@@ -29,7 +29,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Iterator;
@@ -41,14 +41,6 @@ import java.util.Iterator;
 public class TreeNodeLazyWrapper implements TreeNode, Serializable {
 
     private static final long serialVersionUID = -5553988352322235606L;
-
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
-    static {
-        MAPPER.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        MAPPER.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
-        MAPPER.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-    }
 
     private final String json;
 
@@ -70,7 +62,7 @@ public class TreeNodeLazyWrapper implements TreeNode, Serializable {
             synchronized (this) {
                 if (this.node == null) {
                     try {
-                        node = MAPPER.readTree(this.json);
+                        node = ReaderWriter.readTree(json);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex.getMessage(), ex);
                     }
