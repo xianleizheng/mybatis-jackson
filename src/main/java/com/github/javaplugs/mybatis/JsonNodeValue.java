@@ -30,10 +30,15 @@ import java.util.NoSuchElementException;
 /**
  * Value container that transfer JSON from/into DB.
  * Main feature of this container is lazy initializing while reading values from DB.
- * It will build JsonNode object only at first call of {@link JsonNodeValue#get()}.
+ * It will build JsonNode object only at first call of {@link JsonNodeValue#get()}
+ * and sometimes {@link JsonNodeValue#isEmpty()}.
  */
 public class JsonNodeValue {
 
+    /**
+     * Value container without any content.
+     * You will not be able to call get() methods on this object.
+     */
     public static JsonNodeValue EMPTY = new JsonNodeValue();
 
     private final String source;
@@ -64,6 +69,7 @@ public class JsonNodeValue {
 
     /**
      * Build value container from JsonNode object.
+     * In this case {@link JsonNodeValue#get()} will never throw any exception.
      *
      * @param node JSON node or null
      */
@@ -73,7 +79,7 @@ public class JsonNodeValue {
 
     /**
      * Build value container from JSON string.
-     * NOTE that if input is not JSON than exception in {@link JsonNodeValue#get()} will be thrown.
+     * NOTE if input is not valid JSON than exception in {@link JsonNodeValue#get()} will be thrown.
      *
      * @param json JSON string or null
      */
@@ -101,17 +107,47 @@ public class JsonNodeValue {
     }
 
     /**
-     * Check if nested value is present.
+     * Check if nested value is present (not null or empty JSON string).
      */
     public boolean isPresent() {
         return value != null || source != null;
     }
 
     /**
-     * Check if nested value does not exists.
+     * Opposite to {@link JsonNodeValue#isPresent()}.
      */
     public boolean isNotPresent() {
         return !isPresent();
+    }
+
+    /**
+     * Return true if value is not present or if underlying JSON is empty object, array or null.
+     * WARNING this method can throw same exceptions as {@link JsonNodeValue#get()} in a case if
+     * source is invalid JSON string.
+     */
+    public boolean isEmpty() {
+        if (!isPresent()) {
+            return true;
+        }
+
+        JsonNode n = get();
+
+        if ((n.isObject() || n.isArray()) && n.size() == 0) {
+            return true;
+        }
+
+        if (n.isNull()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Opposite to {@link JsonNodeValue#isEmpty()}.
+     */
+    public boolean isNotEmpty() {
+        return !isEmpty();
     }
 
     /**
@@ -143,7 +179,9 @@ public class JsonNodeValue {
     }
 
     /**
-     * See {@link JsonNodeValue#get()}
+     * Same as {@link JsonNodeValue#get()}.
+     * Created for compatibility with frameworks that works with object properties,
+     * thus require get* methods.
      */
     public JsonNode getValue() {
         return get();
