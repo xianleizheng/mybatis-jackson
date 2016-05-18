@@ -57,7 +57,7 @@ public class JsonNodeValueTypeHandler extends BaseTypeHandler<JsonNodeValue> {
             }
             ps.setString(i, json);
         } else {
-            ps.setNull(i, jdbcType.TYPE_CODE);
+            ps.setString(i, null);
         }
     }
 
