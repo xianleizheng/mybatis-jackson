@@ -25,6 +25,9 @@ package com.github.javaplugs.mybatis;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.NoSuchElementException;
 
 /**
@@ -33,7 +36,9 @@ import java.util.NoSuchElementException;
  * It will build JsonNode object only at first call of {@link JsonNodeValue#get()}
  * and sometimes {@link JsonNodeValue#isEmpty()}.
  */
-public class JsonNodeValue {
+public class JsonNodeValue implements Serializable {
+
+    private static final long serialVersionUID = 745861884668365334L;
 
     /**
      * Value container without any content.
@@ -41,11 +46,11 @@ public class JsonNodeValue {
      */
     public static JsonNodeValue EMPTY = new JsonNodeValue();
 
-    private final String source;
+    private String source;
 
     private boolean dbSource;
 
-    private JsonNode value;
+    private transient JsonNode value;
 
     private JsonNodeValue() {
         this.source = null;
@@ -193,5 +198,12 @@ public class JsonNodeValue {
 
     String getSource() {
         return this.source;
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        if (this.source == null && this.value != null) {
+            this.source = ReaderWriter.write(this.value);
+        }
+        oos.defaultWriteObject();
     }
 }
